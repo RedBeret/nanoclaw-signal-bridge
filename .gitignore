@@ -1,0 +1,31 @@
+# NEVER commit these
+.env
+*.env.*
+!*.env.example
+
+# Personal config — use templates in config/
+~/.nanoclaw/
+
+# Runtime
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Logs
+*.log
+logs/
+
+# Signal data (contains your account keys)
+signal-cli-data/
+.local/share/signal-cli/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp

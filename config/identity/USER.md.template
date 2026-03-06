@@ -1,0 +1,42 @@
+# User Profile
+
+*Update this with your details so your agent knows who it's working with.*
+
+## Identity
+
+| Field | Value |
+|---|---|
+| **Name** | YOUR_NAME |
+| **Timezone** | YOUR_TIMEZONE (e.g. America/Los_Angeles) |
+| **What you do** | YOUR_PROFESSION |
+
+## Background
+
+Write a few sentences about yourself — your background, what you build,
+what you care about. The agent uses this to give you better answers.
+
+## Communication Preferences
+
+- **Tone:** YOUR_PREFERRED_TONE (e.g. "Plain language, direct, no corporate speak")
+- **Detail level:** YOUR_PREFERENCE (e.g. "Don't over-explain what I already know")
+
+## Work Setup
+
+- **Machines:** YOUR_MACHINES
+- **Languages:** YOUR_LANGUAGES
+- **Tools:** YOUR_TOOLS
+
+## What You Use the Agent For
+
+List the main things you want your agent to help with.
+This helps it prioritize and understand context.
+
+1.
+2.
+3.
+
+## Privacy
+
+- API keys stay in .env — never in chat, logs, or files
+- All GitHub repos private by default
+- Prefer local solutions over public cloud when equivalent
