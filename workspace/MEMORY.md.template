@@ -1,0 +1,25 @@
+# Long-Term Memory
+
+Loaded every session. Keep under 3,000 chars. Prune stale entries.
+
+---
+
+## Deployment Context
+
+- **Machine:** YOUR_MACHINE_DESCRIPTION
+- **Runtime:** NanoClaw (Claude SDK)
+- **Models:** Claude Sonnet (primary), Claude Haiku (fallback)
+- **Workspace:** ~/.nanoclaw/workspace/
+
+## Key Decisions
+
+*Add decisions here as you make them. Format:*
+*- DECISION: brief description (date)*
+
+## User Preferences
+
+*Add preferences here as you discover them. Format:*
+*- PREFERENCE: description*
+
+---
+*Update incrementally. Daily logs → memory/YYYY-MM-DD.md*

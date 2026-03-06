@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "name": "nanoclaw",
+
+  "channels": {
+    "signal": {
+      "enabled": true,
+      "account": "YOUR_AGENT_NUMBER",
+      "allowlist": [
+        "YOUR_PERSONAL_NUMBER_NO_PLUS_OR_DASHES"
+      ],
+      "poll_interval_seconds": 5,
+      "daemon_port": 19756
+    }
+  },
+
+  "paths": {
+    "workspace": "~/.nanoclaw/workspace",
+    "logs": "~/.nanoclaw/logs",
+    "sessions": "~/.nanoclaw/agents",
+    "identity": "~/.nanoclaw/identity",
+    "scripts": "~/.nanoclaw/scripts"
+  },
+
+  "schedules": [
+    {
+      "name": "morning_briefing",
+      "agent": "main",
+      "prompt": "Good morning. Summarize yesterday's memory log if it exists, list any pending tasks. Send summary via Signal.",
+      "cron": "0 8 * * *",
+      "notify": true
+    },
+    {
+      "name": "daily_health",
+      "agent": "main",
+      "prompt": "Run a health check: verify disk space, check if signal-cli is responsive. Report issues only.",
+      "cron": "0 12 * * *",
+      "notify_on_failure": true
+    }
+  ],
+
+  "knowledge": {
+    "ollama_url": "http://127.0.0.1:11434",
+    "embedding_model": "nomic-embed-text",
+    "index_paths": [
+      "~/.nanoclaw/workspace"
+    ],
+    "exclude_patterns": [
+      "archive/*",
+      "*.db",
+      "*.docx"
+    ]
+  }
+}
