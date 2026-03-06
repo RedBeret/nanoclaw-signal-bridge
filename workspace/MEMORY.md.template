@@ -7,8 +7,7 @@ Loaded every session. Keep under 3,000 chars. Prune stale entries.
 ## Deployment Context
 
 - **Machine:** YOUR_MACHINE_DESCRIPTION
-- **Runtime:** NanoClaw (Claude SDK)
-- **Models:** Claude Sonnet (primary), Claude Haiku (fallback)
+- **Runtime:** NanoClaw
 - **Workspace:** ~/.nanoclaw/workspace/
 
 ## Key Decisions
@@ -22,4 +21,4 @@ Loaded every session. Keep under 3,000 chars. Prune stale entries.
 *- PREFERENCE: description*
 
 ---
-*Update incrementally. Daily logs → memory/YYYY-MM-DD.md*
+*Update incrementally. Daily logs go to memory/YYYY-MM-DD.md*

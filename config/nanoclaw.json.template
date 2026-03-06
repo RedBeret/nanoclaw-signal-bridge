@@ -4,120 +4,77 @@
 
   "agents": {
     "defaults": {
-      "model": "claude-sonnet-4-5",
-      "fallback_model": "claude-haiku-4-5",
-      "compaction": {
-        "mode": "default",
-        "reserveTokensFloor": 40000,
-        "memoryFlush": {
-          "enabled": true,
-          "softThresholdTokens": 40000
-        }
-      },
-      "session_max_tasks": 50,
-      "idle_timeout": 120
+      "model": "claude-sonnet-4-6",
+      "max_turns": 50,
+      "permission_mode": "acceptEdits"
     },
-    "list": [
-      {
-        "name": "main",
-        "description": "General assistant — conversation, research, planning, multi-step tasks",
-        "model": "claude-sonnet-4-5",
-        "workspace": "~/.nanoclaw/workspace",
-        "identity_dir": "~/.nanoclaw/identity",
+    "list": {
+      "main": {
+        "model": "claude-sonnet-4-6",
+        "description": "General-purpose assistant — conversation, research, coding, tasks",
         "skills": [
           "coding", "research", "writing", "sysadmin",
-          "github", "security", "web-browsing", "automation",
-          "debugging", "deployment", "documents", "media",
-          "scaffolding", "testing", "data", "handoff",
-          "context-management"
+          "github", "web-browsing", "automation",
+          "debugging", "deployment"
         ],
-        "tools": ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "WebSearch", "WebFetch", "Agent"]
+        "tools": ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "WebSearch", "WebFetch"],
+        "workspace": "~/.nanoclaw/workspace"
       },
-      {
-        "name": "coder",
-        "description": "Code writing, debugging, testing, GitHub operations",
-        "model": "claude-sonnet-4-5",
+      "coder": {
+        "model": "claude-sonnet-4-6",
+        "description": "Code-focused agent — writing, reviewing, debugging",
         "skills": ["coding", "github", "testing", "debugging"],
-        "tools": ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
+        "tools": ["Read", "Write", "Edit", "Bash", "Glob", "Grep"],
+        "workspace": "~/.nanoclaw/workspace"
       },
-      {
-        "name": "writer",
-        "description": "Documents, reports, content creation",
-        "model": "claude-sonnet-4-5",
-        "skills": ["writing", "documents", "research"],
-        "tools": ["Read", "Write", "Edit", "Glob", "Grep", "WebSearch", "WebFetch"]
+      "writer": {
+        "model": "claude-sonnet-4-6",
+        "description": "Long-form writing — docs, reports, summaries",
+        "skills": ["writing", "research"],
+        "tools": ["Read", "Write", "Edit", "Glob", "Grep", "WebSearch", "WebFetch"],
+        "workspace": "~/.nanoclaw/workspace"
       },
-      {
-        "name": "research",
-        "description": "Web research, fact-finding, source evaluation",
-        "model": "claude-sonnet-4-5",
+      "research": {
+        "model": "claude-sonnet-4-6",
+        "description": "Web research and information gathering",
         "skills": ["research", "web-browsing"],
-        "tools": ["Read", "Glob", "Grep", "WebSearch", "WebFetch"]
+        "tools": ["Read", "Glob", "Grep", "WebSearch", "WebFetch"],
+        "workspace": "~/.nanoclaw/workspace"
       }
-    ]
+    }
   },
 
   "channels": {
     "signal": {
       "enabled": true,
-      "account": "+1XXXXXXXXXX",
-      "allowlist": ["+1XXXXXXXXXX"],
+      "account": "YOUR_AGENT_NUMBER",
+      "allowlist": ["YOUR_PHONE_NUMBER"],
       "poll_interval_seconds": 5,
       "daemon_port": 19756
     }
   },
 
-  "nodes": {
-    "macmini": {
-      "host": "localhost",
-      "role": "primary"
-    }
-  },
+  "nodes": {},
 
   "mcp_servers": {
     "github": {
-      "command": "gh",
-      "args": ["mcp", "server"],
-      "env": {}
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "auth": "gh_cli",
+      "enabled_for_skills": ["github", "coding"]
     },
     "playwright": {
+      "type": "stdio",
       "command": "npx",
       "args": ["@playwright/mcp@latest"],
-      "env": {}
+      "enabled_for_skills": ["web-browsing", "testing"]
     }
   },
-
-  "knowledge": {
-    "embedding_model": "nomic-embed-text",
-    "index_paths": ["~/.nanoclaw/workspace"],
-    "exclude_patterns": ["archive/", ".git/", "node_modules/", "*.db"]
-  },
-
-  "schedules": [
-    {
-      "name": "morning_briefing",
-      "cron": "0 8 * * *",
-      "agent": "main",
-      "prompt": "Good morning. Check workspace health, summarize yesterday's memory log, and list any pending tasks."
-    },
-    {
-      "name": "daily_health",
-      "cron": "0 12 * * *",
-      "agent": "main",
-      "prompt": "Run a health check: verify disk space, check if signal-cli is responsive, verify Claude API is reachable. Report any issues."
-    },
-    {
-      "name": "memory_cleanup",
-      "cron": "0 22 * * 0",
-      "agent": "main",
-      "prompt": "Review memory files older than 7 days. Extract important patterns or decisions into MEMORY.md. Archive or prune stale entries."
-    }
-  ],
 
   "paths": {
     "workspace": "~/.nanoclaw/workspace",
     "logs": "~/.nanoclaw/logs",
-    "sessions": "~/.nanoclaw/sessions",
+    "sessions": "~/.nanoclaw/agents",
     "identity": "~/.nanoclaw/identity",
     "scripts": "~/.nanoclaw/scripts"
   }

@@ -1,135 +1,108 @@
-# Claude Signal Agent
+# NanoClaw Signal Agent
 
-A self-hosted Claude AI agent you control via Signal messenger — running on your own hardware, 24/7.
+A Signal messenger bridge for [NanoClaw](https://github.com/YOUR_USERNAME/nanoclaw) — text your AI agent from anywhere.
 
-Ask it questions, run tasks, build tools, manage your GitHub, browse the web. All from Signal.
+> **Not affiliated with Anthropic.** This is a community project that connects Signal to a NanoClaw agent runtime. NanoClaw uses the [claude-code-sdk](https://pypi.org/project/claude-code-sdk/) — see NanoClaw docs for API setup.
 
-## What This Is
+## What This Does
 
-A wrapper that wires together:
-- **NanoClaw** — Claude SDK-powered agent framework
-- **signal-cli** — open-source Signal bridge (no app needed)
-- **Claude API** — Anthropic's API for the actual AI
-- **GitHub CLI** (optional) — for coding and repo management tasks
+Connects your existing NanoClaw agent to Signal messenger so you can interact with it from your phone. That's it.
 
-Your agent runs on a dedicated machine (Mac Mini, Raspberry Pi, Linux box). You message it from Signal like texting someone who can actually do things.
+```
+You (Signal) -> signal-cli -> NanoClaw -> Your Agent -> Response -> Signal
+```
 
-## What You Need
+Your agent:
+- Polls Signal for new messages every 5 seconds
+- Routes messages through NanoClaw's orchestrator
+- Returns the response to you on Signal
+- Remembers conversation context across messages
+- Can use any tools NanoClaw supports (web, GitHub, file ops, etc.)
+
+## Quick Start
+
+```bash
+git clone https://github.com/YOUR_USERNAME/claude-signal-agent.git
+cd claude-signal-agent
+./setup
+```
+
+The interactive setup wizard walks you through everything.
+
+## Requirements
 
 | Requirement | Notes |
 |------------|-------|
 | Mac or Linux machine | Dedicated is best — Mac Mini M1 is ideal |
 | Python 3.10+ | Usually pre-installed |
 | Java 17+ | For signal-cli |
-| Homebrew | Mac only — install at brew.sh |
-| Anthropic API key | Get one at console.anthropic.com |
-| Signal phone number | Must be a real number — use a second number or a VoIP line |
+| Anthropic API key or CLI subscription | See [NanoClaw docs](https://github.com/YOUR_USERNAME/nanoclaw) for setup |
+| Signal phone number | A second number for your agent (Google Voice works) |
 
-The Signal number is for your **agent**, not you. Your agent has its own Signal account it uses to respond to you.
+## What's Included
 
-## Setup (~30 minutes)
+This repo bundles NanoClaw's core runtime stripped to what's needed for Signal integration:
 
-### 1. Clone this repo
+```
+src/nanoclaw/
+├── cli.py              # CLI commands (daemon, run, chat, status, agents)
+├── orchestrator.py     # Session management, rate limit handling
+├── agents.py           # Agent definitions, system prompt builder
+├── config.py           # Config loader (nanoclaw.json + .env)
+├── channels/
+│   └── signal.py       # Signal message polling and routing
+├── stores/
+│   ├── conversations.py  # Encrypted message history (SQLite)
+│   ├── crypto.py         # Fernet encryption with Keychain/file key
+│   └── usage.py          # Task usage tracking
+└── setup/
+    └── ...             # Interactive TUI setup wizard (rich + questionary)
+```
+
+## CLI
 
 ```bash
-git clone https://github.com/RedBeret/claude-signal-agent.git
-cd claude-signal-agent
+nanoclaw daemon          # Start the Signal listener
+nanoclaw run main "..."  # Run a one-shot task
+nanoclaw chat            # Interactive terminal chat
+nanoclaw status          # Health check
+nanoclaw agents          # List configured agents
+nanoclaw setup           # Re-run the setup wizard
 ```
 
-### 2. Run the installer
+## Configuration
 
-```bash
-chmod +x setup.sh
-./setup.sh
-```
+All config lives in `~/.nanoclaw/`:
 
-This installs dependencies, sets up the Python environment, and walks you through Signal registration.
-
-### 3. Configure your agent
-
-Copy the templates and fill in your details:
-
-```bash
-cp config/nanoclaw.json.template ~/.nanoclaw/nanoclaw.json
-cp config/identity/SOUL.md.template ~/.nanoclaw/workspace/SOUL.md
-cp config/identity/IDENTITY.md.template ~/.nanoclaw/workspace/IDENTITY.md
-cp config/identity/USER.md.template ~/.nanoclaw/workspace/USER.md
-```
-
-Edit each file — replace `YOUR_*` placeholders with your actual values.
-The comments explain what each field does.
-
-### 4. Add your Anthropic API key
-
-```bash
-echo "ANTHROPIC_API_KEY=sk-ant-your-key-here" > ~/.nanoclaw/.env
-chmod 600 ~/.nanoclaw/.env
-```
-
-### 5. Start the agent
-
-```bash
-./scripts/start.sh
-```
-
-Send a message to your agent's Signal number. It should respond.
-
-### 6. Run on startup (optional)
-
-```bash
-./scripts/install-launchd.sh   # Mac
-./scripts/install-systemd.sh   # Linux
-```
-
-## How It Works
-
-```
-You (Signal) → signal-cli bridge → NanoClaw → Claude API → Response → Signal
-```
-
-Your agent:
-- Polls Signal for new messages every 5 seconds
-- Sends your message to Claude via the Anthropic API
-- Returns the response to you on Signal
-- Remembers context within a session
-- Can be given tools (web search, GitHub, file operations, etc.)
-
-## Security
-
-- Your API key lives in `~/.nanoclaw/.env` — never committed to this repo
-- signal-cli runs locally — Signal messages never go through a third-party server
-- Agent only responds to phone numbers you explicitly allowlist
-- Pre-commit hook blocks accidental secret commits
-
-## Customization
-
-Edit the identity files to define your agent's personality, values, and limits:
-
-| File | What it controls |
-|------|-----------------|
-| `IDENTITY.md` | Name, role, persona |
-| `SOUL.md` | Values, hard limits, communication style |
-| `USER.md` | Your profile — who the agent is working with |
+| File | Purpose |
+|------|---------|
+| `nanoclaw.json` | Main config — agents, Signal, MCP servers |
+| `.env` | API keys (never committed) |
+| `workspace/SOUL.md` | Agent values and hard limits |
+| `workspace/IDENTITY.md` | Agent name and persona |
+| `workspace/USER.md` | Your profile |
+| `workspace/MEMORY.md` | Persistent memory (read/written by agent) |
 
 See `docs/CUSTOMIZATION.md` for the full guide.
 
-## Troubleshooting
+## Security
 
-**Agent not responding?**
-```bash
-./scripts/health-check.sh
-```
+- API keys in `~/.nanoclaw/.env` with `chmod 600`
+- Encryption key in macOS Keychain (or restricted file on Linux)
+- Conversation history encrypted at rest (Fernet/AES-128-CBC)
+- Agent only responds to allowlisted phone numbers
+- Pre-commit hook blocks accidental secret commits
 
-**Signal not connecting?**
-```bash
-signal-cli -a YOUR_AGENT_NUMBER receive
-```
+## Manual Installation
 
-**Claude API errors?**
 ```bash
-tail -50 ~/.nanoclaw/logs/nanoclaw.log
+pip install -e .
+cp config/nanoclaw.json.template ~/.nanoclaw/nanoclaw.json
+cp config/identity/*.template ~/.nanoclaw/workspace/
+# Edit config, add API key, then:
+nanoclaw daemon
 ```
 
 ## License
 
-MIT — use it, fork it, share it freely.
+MIT

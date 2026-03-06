@@ -12,24 +12,19 @@
 
 ## Background
 
-Write a few sentences about yourself — your background, what you build,
-what you care about. The agent uses this to give you better answers.
+YOUR_BACKGROUND
 
 ## Communication Preferences
 
-- **Tone:** YOUR_PREFERRED_TONE (e.g. "Plain language, direct, no corporate speak")
-- **Detail level:** YOUR_PREFERENCE (e.g. "Don't over-explain what I already know")
+- **Tone:** Plain language, direct, no corporate speak
+- **Detail level:** Don't over-explain what I already know
 
 ## Work Setup
 
-- **Machines:** YOUR_MACHINES
 - **Languages:** YOUR_LANGUAGES
 - **Tools:** YOUR_TOOLS
 
 ## What You Use the Agent For
-
-List the main things you want your agent to help with.
-This helps it prioritize and understand context.
 
 1.
 2.

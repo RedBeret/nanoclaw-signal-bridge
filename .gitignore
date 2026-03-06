@@ -1,15 +1,18 @@
-# NEVER commit these
+# Secrets — NEVER commit
 .env
 *.env.*
 !*.env.example
 
-# Personal config — use templates in config/
+# Personal config
 ~/.nanoclaw/
 
-# Runtime
+# Python
 __pycache__/
 *.pyc
 *.pyo
+*.egg-info/
+dist/
+build/
 .venv/
 venv/
 
@@ -17,9 +20,17 @@ venv/
 *.log
 logs/
 
-# Signal data (contains your account keys)
+# Signal data (contains account keys)
 signal-cli-data/
 .local/share/signal-cli/
+
+# Databases
+*.db
+*.db-journal
+*.db-wal
+
+# Wizard state
+.setup-state.json
 
 # OS
 .DS_Store
@@ -29,3 +40,4 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+*.swo
