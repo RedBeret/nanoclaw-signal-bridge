@@ -21,7 +21,7 @@ Keep it short (under 2,000 chars). The shorter it is, the more room for actual w
 Defines the agent's name, role, and how it presents itself.
 
 **What to customize:**
-- Change the name (default: Alfred, because it's a classic)
+- Change the name (default: Agent)
 - Adjust the persona description
 - Set who it works with (your name, how it should address you)
 

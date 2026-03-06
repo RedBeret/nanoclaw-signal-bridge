@@ -1,16 +1,73 @@
 {
   "version": 1,
-  "name": "nanoclaw",
+  "name": "YOUR_AGENT_NAME",
+
+  "agents": {
+    "defaults": {
+      "model": "claude-sonnet-4-6",
+      "max_turns": 50,
+      "permission_mode": "acceptEdits"
+    },
+    "list": {
+      "main": {
+        "model": "claude-sonnet-4-6",
+        "description": "General-purpose assistant — conversation, research, coding, tasks",
+        "skills": [
+          "coding", "research", "writing", "sysadmin",
+          "github", "web-browsing", "automation",
+          "debugging", "deployment"
+        ],
+        "tools": ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "WebSearch", "WebFetch"],
+        "workspace": "~/.nanoclaw/workspace"
+      },
+      "coder": {
+        "model": "claude-sonnet-4-6",
+        "description": "Code-focused agent — writing, reviewing, debugging",
+        "skills": ["coding", "github", "testing", "debugging"],
+        "tools": ["Read", "Write", "Edit", "Bash", "Glob", "Grep"],
+        "workspace": "~/.nanoclaw/workspace"
+      },
+      "writer": {
+        "model": "claude-sonnet-4-6",
+        "description": "Long-form writing — docs, reports, summaries",
+        "skills": ["writing", "research"],
+        "tools": ["Read", "Write", "Edit", "Glob", "Grep", "WebSearch", "WebFetch"],
+        "workspace": "~/.nanoclaw/workspace"
+      },
+      "research": {
+        "model": "claude-sonnet-4-6",
+        "description": "Web research and information gathering",
+        "skills": ["research", "web-browsing"],
+        "tools": ["Read", "Glob", "Grep", "WebSearch", "WebFetch"],
+        "workspace": "~/.nanoclaw/workspace"
+      }
+    }
+  },
 
   "channels": {
     "signal": {
       "enabled": true,
       "account": "YOUR_AGENT_NUMBER",
-      "allowlist": [
-        "YOUR_PERSONAL_NUMBER_NO_PLUS_OR_DASHES"
-      ],
+      "allowlist": ["YOUR_PHONE_NUMBER"],
       "poll_interval_seconds": 5,
       "daemon_port": 19756
+    }
+  },
+
+  "nodes": {},
+
+  "mcp_servers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "auth": "gh_cli",
+      "enabled_for_skills": ["github", "coding"]
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+      "enabled_for_skills": ["web-browsing", "testing"]
     }
   },
 
@@ -20,35 +77,5 @@
     "sessions": "~/.nanoclaw/agents",
     "identity": "~/.nanoclaw/identity",
     "scripts": "~/.nanoclaw/scripts"
-  },
-
-  "schedules": [
-    {
-      "name": "morning_briefing",
-      "agent": "main",
-      "prompt": "Good morning. Summarize yesterday's memory log if it exists, list any pending tasks. Send summary via Signal.",
-      "cron": "0 8 * * *",
-      "notify": true
-    },
-    {
-      "name": "daily_health",
-      "agent": "main",
-      "prompt": "Run a health check: verify disk space, check if signal-cli is responsive. Report issues only.",
-      "cron": "0 12 * * *",
-      "notify_on_failure": true
-    }
-  ],
-
-  "knowledge": {
-    "ollama_url": "http://127.0.0.1:11434",
-    "embedding_model": "nomic-embed-text",
-    "index_paths": [
-      "~/.nanoclaw/workspace"
-    ],
-    "exclude_patterns": [
-      "archive/*",
-      "*.db",
-      "*.docx"
-    ]
   }
 }
